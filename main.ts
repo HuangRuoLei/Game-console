@@ -356,10 +356,12 @@ namespace HuLuMaoGame {
     //% color="#006400"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function LCD_Gui_DrawFont_number(x:number,y:number,data:number,c1:LCDcolor,c2:LCDcolor) {
-        let i, j, k, x0,num
-        x0 = x
-        let text:string=null
-        text=data.toString()
+        // let i, j, k, x0,num
+        // x0 = x
+        // let text: string = null
+        // text = data.toString()
+        LCD_Gui_DrawFont_GBK16(x, y, data.toString(), c1, c2)
+        /*
         for (let n = 0; n < text.length; n++){
             if (text.charCodeAt(n)<128) {
                 k = text.charCodeAt(n)
@@ -387,7 +389,168 @@ namespace HuLuMaoGame {
                     x += 8
                 }
             }
+        }  */
+    }
+
+     /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoGame_LCD_Gui_Circle block="画一个圆，圆心x=%X y=%Y 半径r=%r 颜色为%fc"
+    //% weight=95
+    //% blockGap=10
+    //% color="#006400"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function LCD_Gui_Circle(X:number,Y:number,r:number,fc:LCDcolor) {
+        let a, b, c
+        a = 0
+        b = r
+        c = 3 - 2 * r
+        while (a < b) {
+            Gui_DrawPoint(X+a,Y+b,fc);    
+            Gui_DrawPoint(X-a,Y+b,fc);      
+            Gui_DrawPoint(X+a,Y-b,fc);      
+            Gui_DrawPoint(X-a,Y-b,fc);      
+            Gui_DrawPoint(X+b,Y+a,fc);            
+            Gui_DrawPoint(X-b,Y+a,fc);           
+            Gui_DrawPoint(X+b,Y-a,fc);            
+            Gui_DrawPoint(X-b,Y-a,fc);             
+
+            if(c<0) c=c+4*a+6; 
+            else 
+            { 
+                c=c+4*(a-b)+10; 
+                b-=1; 
+            } 
+            a+=1;
         }
+        if (a==b)  { 
+            Gui_DrawPoint(X+a,Y+b,fc); 
+            Gui_DrawPoint(X+a,Y+b,fc); 
+            Gui_DrawPoint(X+a,Y-b,fc); 
+            Gui_DrawPoint(X-a,Y-b,fc); 
+            Gui_DrawPoint(X+b,Y+a,fc); 
+            Gui_DrawPoint(X-b,Y+a,fc); 
+            Gui_DrawPoint(X+b,Y-a,fc); 
+            Gui_DrawPoint(X-b,Y-a,fc); 
+        }
+    }
+    /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoGame_LCD_Gui_DrawLine block="画一条直线，起点x0=%x0 y0=%y0 终点x1=%x1 y1=%y1 颜色为%Color"
+    //% weight=94
+    //% blockGap=10
+    //% color="#006400"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function LCD_Gui_DrawLine(x0:number,y0:number,x1:number,y1:number, Color:LCDcolor) {
+        let dx,             // difference in x's
+            dy,             // difference in y's
+            dx2,            // dx,dy * 2
+            dy2, 
+            x_inc,          // amount in pixel space to move during drawing
+            y_inc,          // amount in pixel space to move during drawing
+            error,          // the discriminant i.e. error i.e. decision variable
+            index;          // used for looping	
+            Lcd_SetXY(x0,y0);
+            dx = x1-x0;//计算x距离
+            dy = y1-y0;//计算y距离
+        
+            if (dx>=0)
+            {
+                x_inc = 1;
+            }
+            else
+            {
+                x_inc = -1;
+                dx    = -dx;  
+            } 
+            
+            if (dy>=0)
+            {
+                y_inc = 1;
+            } 
+            else
+            {
+                y_inc = -1;
+                dy    = -dy; 
+            } 
+        
+            dx2 = dx << 1;
+            dy2 = dy << 1;
+        
+            if (dx > dy)//x距离大于y距离，那么每个x轴上只有一个点，每个y轴上有若干个点
+            {//且线的点数等于x距离，以x轴递增画点
+                // initialize error term
+                error = dy2 - dx; 
+        
+                // draw the line
+                for (index=0; index <= dx; index++)//要画的点数不会超过x距离
+                {
+                    //画点
+                    Gui_DrawPoint(x0,y0,Color);
+                    
+                    // test if error has overflowed
+                    if (error >= 0) //是否需要增加y坐标值
+                    {
+                        error-=dx2;
+        
+                        // move to next line
+                        y0+=y_inc;//增加y坐标值
+                    } // end if error overflowed
+        
+                    // adjust the error term
+                    error+=dy2;
+        
+                    // move to the next pixel
+                    x0+=x_inc;//x坐标值每次画点后都递增1
+                } // end for
+            } // end if |slope| <= 1
+            else//y轴大于x轴，则每个y轴上只有一个点，x轴若干个点
+            {//以y轴为递增画点
+                // initialize error term
+                error = dx2 - dy; 
+        
+                // draw the line
+                for (index=0; index <= dy; index++)
+                {
+                    // set the pixel
+                    Gui_DrawPoint(x0,y0,Color);
+        
+                    // test if error overflowed
+                    if (error >= 0)
+                    {
+                        error-=dy2;
+        
+                        // move to next line
+                        x0+=x_inc;
+                    } // end if error overflowed
+        
+                    // adjust the error term
+                    error+=dx2;
+        
+                    // move to the next pixel
+                    y0+=y_inc;
+                } // end for
+            } // end else |slope| > 1
+    }
+
+    /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoGame_LCD_Gui_rectangle block="画一个矩形，起点x=%x y=%y 宽=%w 高=%h 颜色为%bc"
+    //% weight=93
+    //% blockGap=10
+    //% color="#006400"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function LCD_Gui_rectangle(x: number, y: number, w: number, h: number, bc: LCDcolor) {
+        LCD_Gui_DrawLine(x,y,x+w,y,bc);
+        LCD_Gui_DrawLine(x+w-1,y+1,x+w-1,y+1+h,bc);
+        LCD_Gui_DrawLine(x,y+h,x+w,y+h,bc);
+        LCD_Gui_DrawLine(x,y,x,y+h,bc);
+        LCD_Gui_DrawLine(x+1,y+1,x+1+w-2,y+1+h-2,bc);
     }
 
 }
