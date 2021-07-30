@@ -356,40 +356,7 @@ namespace HuLuMaoGame {
     //% color="#006400"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function LCD_Gui_DrawFont_number(x:number,y:number,data:number,c1:LCDcolor,c2:LCDcolor) {
-        // let i, j, k, x0,num
-        // x0 = x
-        // let text: string = null
-        // text = data.toString()
         LCD_Gui_DrawFont_GBK16(x, y, data.toString(), c1, c2)
-        /*
-        for (let n = 0; n < text.length; n++){
-            if (text.charCodeAt(n)<128) {
-                k = text.charCodeAt(n)
-                if (k == 13) {
-                    x = x0
-                    y += 16
-                }
-                else {
-                    if (k > 32) k -= 32
-                    else k = 0;
-                    for (i = 0; i<16; i++){
-                        num=asc16[k*4+i/4]
-                        for (j = 0; j < 8; j++){
-                            if (((num>>((3-(i%4))*8))&0x000000ff)&(0x80>>j)) {
-                                Gui_DrawPoint(x + j, y + i, c1)
-                            }
-                            else {
-                                if (c1 != c2) {
-                                    Gui_DrawPoint(x + j, y + i, c2)
-                                }
-                            }
-                            
-                        }
-                    }
-                    x += 8
-                }
-            }
-        }  */
     }
 
      /**
@@ -547,10 +514,9 @@ namespace HuLuMaoGame {
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function LCD_Gui_rectangle(x: number, y: number, w: number, h: number, bc: LCDcolor) {
         LCD_Gui_DrawLine(x,y,x+w,y,bc);
-        LCD_Gui_DrawLine(x+w-1,y+1,x+w-1,y+1+h,bc);
+        LCD_Gui_DrawLine(x+w,y,x+w,y+h,bc);
         LCD_Gui_DrawLine(x,y+h,x+w,y+h,bc);
         LCD_Gui_DrawLine(x,y,x,y+h,bc);
-        LCD_Gui_DrawLine(x+1,y+1,x+1+w-2,y+1+h-2,bc);
     }
 
 }
