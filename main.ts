@@ -173,7 +173,7 @@ namespace HuLuMaoGame {
      * @param index
     */
     //% blockId=HuLuMaoGame_LcdInit block="初始化显示屏"
-    //% weight=100
+    //% weight=150
     //% blockGap=10
     //% color="#006400"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
@@ -274,7 +274,7 @@ namespace HuLuMaoGame {
      * @param index
     */
     //% blockId=HuLuMaoGame_LCDReset block="复位显示屏"
-    //% weight=99
+    //% weight=149
     //% blockGap=10
     //% color="#006400"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
@@ -290,15 +290,34 @@ namespace HuLuMaoGame {
      * @param index
     */
     //% blockId=HuLuMaoGame_Lcd_Clear block="清空屏幕并将底色设置为|%value"
-    //% weight=98 
+    //% weight=148 
     //% blockGap=10
     //% color="#006400"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function Lcd_Clear (value:LCDcolor) {
         Lcd_SetRegion(2, 1, 129, 160)
         LCDWriteindex(44)
-        for (let i = 0; i < 128; i++) {
-            for (let i = 0; i < 160; i++) {
+        for (let i = 0; i < 160; i++) {
+            for (let j = 0; j < 128; j++) {
+                LCDWritedata16(value)
+            }
+        }
+    }
+
+        /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoGame_Lcd_Clearxy block="清空指定区域并将底色设置为|%value 起点x0 =%x0 y0 =%y0 终点 x1= %x1 y1 =%y1"
+    //% weight=147 
+    //% blockGap=10
+    //% color="#006400"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function Lcd_Clearxy (value:LCDcolor,x0:number,y0:number,x1:number,y1:number) {
+        Lcd_SetRegion(x0, y0, x1, y1)
+        LCDWriteindex(44)
+        for (let i = 0; i < y1; i++) {
+            for (let j = 0; j < x1; j++) {
                 LCDWritedata16(value)
             }
         }
@@ -307,7 +326,7 @@ namespace HuLuMaoGame {
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame_LCD_Gui_DrawFont_GBK16 block="在x=%x y=%y显示字符%text 字符颜色为%c1 底色为%c2"
+    //% blockId=HuLuMaoGame_LCD_Gui_DrawFont_GBK16 block="在 x =%x y =%y显示字符%text 字符颜色为%c1 底色为%c2"
     //% weight=97
     //% blockGap=10
     //% color="#006400"
@@ -350,7 +369,7 @@ namespace HuLuMaoGame {
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame_LCD_Gui_DrawFont_number block="在x=%x y=%y显示数字%data 数字颜色为%c1 底色为%c2"
+    //% blockId=HuLuMaoGame_LCD_Gui_DrawFont_number block="在x =%x y =%y显示数字%data 数字颜色为%c1 底色为%c2"
     //% weight=96
     //% blockGap=10
     //% color="#006400"
@@ -363,7 +382,7 @@ namespace HuLuMaoGame {
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame_LCD_Gui_Circle block="画一个圆，圆心x=%X y=%Y 半径r=%r 颜色为%fc"
+    //% blockId=HuLuMaoGame_LCD_Gui_Circle block="画一个圆，圆心 x =%X y =%Y 半径 r= %r 颜色为%fc"
     //% weight=95
     //% blockGap=10
     //% color="#006400"
@@ -406,7 +425,7 @@ namespace HuLuMaoGame {
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame_LCD_Gui_DrawLine block="画一条直线，起点x0=%x0 y0=%y0 终点x1=%x1 y1=%y1 颜色为%Color"
+    //% blockId=HuLuMaoGame_LCD_Gui_DrawLine block="画一条直线，起点 x0 =%x0 y0 =%y0 终点 x1 =%x1 y1 =%y1 颜色为%Color"
     //% weight=94
     //% blockGap=10
     //% color="#006400"
@@ -507,7 +526,7 @@ namespace HuLuMaoGame {
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame_LCD_Gui_rectangle block="画一个矩形，起点x=%x y=%y 宽=%w 高=%h 颜色为%bc"
+    //% blockId=HuLuMaoGame_LCD_Gui_rectangle block="画一个矩形，起点 x =%x y =%y 宽 =%w 高 =%h 颜色为%bc"
     //% weight=93
     //% blockGap=10
     //% color="#006400"
