@@ -539,6 +539,34 @@ namespace HuLuMaoGame {
 
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //% color="#cc33ff" weight=50 icon="\uf1b9" block="呼噜猫游戏机小屏"
 namespace HuLuMaoGame1 {
     const chipAdress = 0x3C//显示屏地址
@@ -749,7 +777,7 @@ namespace HuLuMaoGame1 {
     //% blockGap=10
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function OLED_ShowNum(x:number,y:number,dat:string){
+    export function OLED_ShowNum(x:number,y:number,dat:number){
         OLED_ShowChar(x,y,dat.toString())
     }
 
