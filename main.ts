@@ -764,6 +764,7 @@ namespace HuLuMaoGame1 {
                 OLED_WR_Byte(data,OLED_DATA);
 				data=0;
             }
+            x+=8;
         }
     }
 
