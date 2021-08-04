@@ -644,12 +644,12 @@ namespace HuLuMaoGame1 {
                     }
                 }
                 if (line[1] !== 0x00) {
-                    OLED_WR_Byte(0x21,OLED_CMD)
-                    OLED_WR_Byte(x,OLED_CMD)
-                    OLED_WR_Byte(x+1,OLED_CMD)
-                    OLED_WR_Byte(0x22,OLED_CMD)
-                    OLED_WR_Byte(page,OLED_CMD)
-                    OLED_WR_Byte(page+1,OLED_CMD)
+                    // OLED_WR_Byte(0x21,OLED_CMD)
+                    // OLED_WR_Byte(x,OLED_CMD)
+                    // OLED_WR_Byte(x+1,OLED_CMD)
+                    // OLED_WR_Byte(0x22,OLED_CMD)
+                    // OLED_WR_Byte(page,OLED_CMD)
+                    // OLED_WR_Byte(page+1,OLED_CMD)
                     //line[1] |= pins.i2cReadBuffer(chipAdress, 2)[1]
                     pins.i2cWriteBuffer(chipAdress, line, false)
                 }
