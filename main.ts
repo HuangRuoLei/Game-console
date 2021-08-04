@@ -730,7 +730,7 @@ namespace HuLuMaoGame1 {
         OLED_WR_Byte(127,OLED_CMD)
         OLED_WR_Byte(0x22,OLED_CMD)
         OLED_WR_Byte(0,OLED_CMD)
-        OLED_WR_Byte(7,OLED_CMD)
+        OLED_WR_Byte(63,OLED_CMD)
         let data = pins.createBuffer(17);
         data[0] = 0x40; // Data Mode
         for (let i = 1; i < 17; i++) {
