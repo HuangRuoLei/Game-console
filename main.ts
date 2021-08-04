@@ -704,6 +704,7 @@ namespace HuLuMaoGame1 {
         OLED_WR_Byte(0x14,OLED_CMD);//
         
         OLED_WR_Byte(0xAF,OLED_CMD);//--turn on oled panel
+        OLED_Clear();
     }
 
     /**
@@ -838,7 +839,7 @@ namespace HuLuMaoGame1 {
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function drawLine(x0: number, y0: number, x1: number, y1: number) {
-        y0*=8;y1*=8
+       // y0*=8;y1*=8
         let pixels: Array<Array<number>> = []
         let kx: number, ky: number, c: number, i: number, xx: number, yy: number, dx: number, dy: number;
         let targetX = x1
