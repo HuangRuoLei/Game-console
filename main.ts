@@ -644,12 +644,12 @@ namespace HuLuMaoGame1 {
                     }
                 }
                 if (line[1] !== 0x00) {
-                    // OLED_WR_Byte(0x21,OLED_CMD)
-                    // OLED_WR_Byte(x,OLED_CMD)
-                    // OLED_WR_Byte(x+1,OLED_CMD)
-                    // OLED_WR_Byte(0x22,OLED_CMD)
-                    // OLED_WR_Byte(page,OLED_CMD)
-                    // OLED_WR_Byte(page+1,OLED_CMD)
+                    OLED_WR_Byte(0x21,OLED_CMD)
+                    OLED_WR_Byte(x,OLED_CMD)
+                    OLED_WR_Byte(x+1,OLED_CMD)
+                    OLED_WR_Byte(0x22,OLED_CMD)
+                    OLED_WR_Byte(page,OLED_CMD)
+                    OLED_WR_Byte(page+1,OLED_CMD)
                     //line[1] |= pins.i2cReadBuffer(chipAdress, 2)[1]
                     pins.i2cWriteBuffer(chipAdress, line, false)
                 }
@@ -717,14 +717,29 @@ namespace HuLuMaoGame1 {
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function OLED_Clear():void{
-        let i,n;		    
-        for(i=0;i<8;i++)  
-        {  
-            OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
-            OLED_WR_Byte (0x00,OLED_CMD);      //设置显示位置—列低地址
-            OLED_WR_Byte (0x10,OLED_CMD);      //设置显示位置—列高地址   
-            for(n=0;n<128;n++) OLED_WR_Byte(0,OLED_DATA); 
-        } 
+        // let i,n;		    
+        // for(i=0;i<8;i++)  
+        // {  
+        //     OLED_WR_Byte (0xb0+i,OLED_CMD);    //设置页地址（0~7）
+        //     OLED_WR_Byte (0x00,OLED_CMD);      //设置显示位置—列低地址
+        //     OLED_WR_Byte (0x10,OLED_CMD);      //设置显示位置—列高地址   
+        //     for(n=0;n<128;n++) OLED_WR_Byte(0,OLED_DATA); 
+        // } 
+        OLED_WR_Byte(0x21,OLED_CMD)
+        OLED_WR_Byte(0,OLED_CMD)
+        OLED_WR_Byte(127,OLED_CMD)
+        OLED_WR_Byte(0x22,OLED_CMD)
+        OLED_WR_Byte(0,OLED_CMD)
+        OLED_WR_Byte(7,OLED_CMD)
+        let data = pins.createBuffer(17);
+        data[0] = 0x40; // Data Mode
+        for (let i = 1; i < 17; i++) {
+            data[i] = 0x00
+        }
+        // send display buffer in 16 byte chunks
+        for (let i = 0; i < 1024; i += 16) {
+            pins.i2cWriteBuffer(chipAdress, data, false)
+        }
     }
 
     /**
@@ -738,6 +753,12 @@ namespace HuLuMaoGame1 {
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function OLED_Clearxy(x0:number,y0:number,x1:number,y1:number):void{
         let x,y;
+        OLED_WR_Byte(0x21,OLED_CMD)
+        OLED_WR_Byte(0,OLED_CMD)
+        OLED_WR_Byte(127,OLED_CMD)
+        OLED_WR_Byte(0x22,OLED_CMD)
+        OLED_WR_Byte(0,OLED_CMD)
+        OLED_WR_Byte(7,OLED_CMD)
         for(y=y0;y<y1;y++)
         {
             OLED_Set_Pos(x0,y);
