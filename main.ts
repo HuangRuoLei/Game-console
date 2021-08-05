@@ -677,6 +677,7 @@ namespace HuLuMaoGame1 {
         pins.digitalWritePin(DigitalPin.P9, 0)
         basic.pause(200)
         pins.digitalWritePin(DigitalPin.P9, 1)
+        /*
         OLED_WR_Byte(0xAE,OLED_CMD);//--display off
         OLED_WR_Byte(0x00,OLED_CMD);//---set low column address
         OLED_WR_Byte(0x10,OLED_CMD);//---set high column address
@@ -711,6 +712,33 @@ namespace HuLuMaoGame1 {
         OLED_WR_Byte(0x14,OLED_CMD);//
         
         OLED_WR_Byte(0xAF,OLED_CMD);//--turn on oled panel
+
+        */
+        OLED_WR_Byte(0xAE,OLED_CMD);
+        OLED_WR_Byte(0xD5,OLED_CMD);
+        OLED_WR_Byte(0x80,OLED_CMD);                                  // the suggested ratio 0x80
+        OLED_WR_Byte(0xA8,OLED_CMD);
+        OLED_WR_Byte(0x3F,OLED_CMD);
+        OLED_WR_Byte(0xD3,OLED_CMD);
+        OLED_WR_Byte(0x00,OLED_CMD);                                   // no offset
+        OLED_WR_Byte(0x40 | 0x0,OLED_CMD);            // line #0
+        OLED_WR_Byte(0x8D,OLED_CMD);
+        OLED_WR_Byte(0x14,OLED_CMD);
+        OLED_WR_Byte(0x20,OLED_CMD);
+        OLED_WR_Byte(0x00,OLED_CMD);                                  // 0x0 act like ks0108
+        OLED_WR_Byte(0xA0 | 0x1,OLED_CMD);
+        OLED_WR_Byte(0xC8,OLED_CMD);
+        OLED_WR_Byte(0xDA,OLED_CMD);
+        OLED_WR_Byte(0x12,OLED_CMD);
+        OLED_WR_Byte(0x81,OLED_CMD);
+        OLED_WR_Byte(0xCF,OLED_CMD);
+        OLED_WR_Byte(0xD9,OLED_CMD);
+        OLED_WR_Byte(0xF1,OLED_CMD);
+        OLED_WR_Byte(0xD8,OLED_CMD);
+        OLED_WR_Byte(0x40,OLED_CMD);
+        OLED_WR_Byte(0xA4,OLED_CMD);
+        OLED_WR_Byte(0xA6,OLED_CMD);
+        OLED_WR_Byte(0xAF,OLED_CMD);
         OLED_Clear();
     }
 
