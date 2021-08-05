@@ -572,7 +572,7 @@ namespace HuLuMaoGame1 {
     const chipAdress = 0x3C//显示屏地址
     const OLED_CMD =0	//写命令
     const OLED_DATA=1	//写数据
-
+    let OLED_GRAM: any[][][144][8]=0;
     export enum display{
         //% blockId="on" block="开启"
         on = 0,
@@ -610,7 +610,7 @@ namespace HuLuMaoGame1 {
 	    OLED_WR_Byte(((x&0xf0)>>4)|0x10,OLED_CMD);
 	    OLED_WR_Byte((x&0x0f),OLED_CMD); 
     }
-
+    
     function drawShape(pixels: Array<Array<number>>) {
         let x1 = 128
         let y1 = 64
@@ -840,67 +840,123 @@ namespace HuLuMaoGame1 {
         OLED_ShowChar(x,y,dat.toString())
     }
 
-    function drawLine1(x0: number, y0: number, x1: number, y1: number) {
-         let pixels: Array<Array<number>> = []
-         let kx: number, ky: number, c: number, i: number, xx: number, yy: number, dx: number, dy: number;
-         let targetX = x1
-         let targetY = y1
-         x1 -= x0; kx = 0; if (x1 > 0) kx = +1; if (x1 < 0) { kx = -1; x1 = -x1; } x1++;
-         y1 -= y0; ky = 0; if (y1 > 0) ky = +1; if (y1 < 0) { ky = -1; y1 = -y1; } y1++;
-         if (x1 >= y1) {
-             c = x1
-             for (i = 0; i < x1; i++ , x0 += kx) {
-                 pixels.push([x0, y0])
-                 c -= y1; if (c <= 0) { if (i != x1 - 1) pixels.push([x0 + kx, y0]); c += x1; y0 += ky; if (i != x1 - 1) pixels.push([x0, y0]); }
-                 if (pixels.length > 20) {
-                     drawShape(pixels)
-                     pixels = []
-                     drawLine1(x0, y0, targetX, targetY)
-                     return
-                 }
-             }
-         } else {
-             c = y1
-             for (i = 0; i < y1; i++ , y0 += ky) {
-                 pixels.push([x0, y0])
-                 c -= x1; if (c <= 0) { if (i != y1 - 1) pixels.push([x0, y0 + ky]); c += y1; x0 += kx; if (i != y1 - 1) pixels.push([x0, y0]); }
-                 if (pixels.length > 20) {
-                     drawShape(pixels)
-                     pixels = []
-                     drawLine1(x0, y0, targetX, targetY)
-                     return
-                 }
-             }
-         }
-         drawShape(pixels)
-     }
-        /**
+    /**
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame1_drawLine block="画线条，起点| x0 =%x0 y0 =%y0 终点| x1 =%x1 y1 =%y1"
+    //% blockId=HuLuMaoGame1_OLED_DrawPoint block="在 x=|%x,y=|%y处画点"
     //% weight=144
     //% blockGap=10
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function drawLine(x0: number, y0: number, x1: number, y1: number) {
-      // y0*=8;y1*=8
-       drawLine1(x0,y0,x1,y1)
+    export function OLED_DrawPoint(x:number,y:number){
+        let i,m,n;
+        i=y/8;
+        m=y%8;
+        n=1<<m;
+        OLED_GRAM[x][i]|=n;
+        OLED_Refresh();
     }
-
-       /**
+    /**
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame1_drawRectangle block="画矩形，起点| x0 =%x0 y0 =%y0 终点| x1 =%x1 y1 =%y1"
-    //% weight=143
+    //% blockId=HuLuMaoGame1_OLED_ClearPoint block="清除x=|%x,y=|%y处的点"
+    //% weight=144
     //% blockGap=10
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function drawRectangle(x0: number, y0: number, x1: number, y1: number) {
-        drawLine(x0, y0, x1, y0)
-        drawLine(x0, y1, x1, y1)
-        drawLine(x0, y0, x0, y1)
-        drawLine(x1, y0, x1, y1)
+    export function OLED_ClearPoint(x:number,y:number){
+        let i,m,n;
+        i=y/8;
+        m=y%8;
+        n=1<<m;
+        OLED_GRAM[x][i]=~OLED_GRAM[x][i];
+        OLED_GRAM[x][i]|=n;
+        OLED_GRAM[x][i]=~OLED_GRAM[x][i];
+        OLED_Refresh();
     }
+    // //更新显存到OLED
+    // /**
+    //  * 
+    //  * @param index
+    // */
+    // //% blockId=HuLuMaoGame1_OLED_Refresh block="更新屏幕显示，在画点之后调用"
+    // //% weight=143
+    // //% blockGap=10
+    // //% color="#cc33ff"
+    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10	
+     function OLED_Refresh(){
+        let i,n
+        for(i=0;i<8;i++){
+            OLED_WR_Byte(0xb0+i,OLED_CMD); //设置行起始地址
+            OLED_WR_Byte(0x00,OLED_CMD);   //设置低列起始地址
+            OLED_WR_Byte(0x10,OLED_CMD);   //设置高列起始地址
+            for(n=0;n<128;n++)
+		        OLED_WR_Byte(OLED_GRAM[n][i],OLED_DATA);    
+        }
+    }
+    // function drawLine1(x0: number, y0: number, x1: number, y1: number) {
+    //      let pixels: Array<Array<number>> = []
+    //      let kx: number, ky: number, c: number, i: number, xx: number, yy: number, dx: number, dy: number;
+    //      let targetX = x1
+    //      let targetY = y1
+    //      x1 -= x0; kx = 0; if (x1 > 0) kx = +1; if (x1 < 0) { kx = -1; x1 = -x1; } x1++;
+    //      y1 -= y0; ky = 0; if (y1 > 0) ky = +1; if (y1 < 0) { ky = -1; y1 = -y1; } y1++;
+    //      if (x1 >= y1) {
+    //          c = x1
+    //          for (i = 0; i < x1; i++ , x0 += kx) {
+    //              pixels.push([x0, y0])
+    //              c -= y1; if (c <= 0) { if (i != x1 - 1) pixels.push([x0 + kx, y0]); c += x1; y0 += ky; if (i != x1 - 1) pixels.push([x0, y0]); }
+    //              if (pixels.length > 20) {
+    //                  drawShape(pixels)
+    //                  pixels = []
+    //                  drawLine1(x0, y0, targetX, targetY)
+    //                  return
+    //              }
+    //          }
+    //      } else {
+    //          c = y1
+    //          for (i = 0; i < y1; i++ , y0 += ky) {
+    //              pixels.push([x0, y0])
+    //              c -= x1; if (c <= 0) { if (i != y1 - 1) pixels.push([x0, y0 + ky]); c += y1; x0 += kx; if (i != y1 - 1) pixels.push([x0, y0]); }
+    //              if (pixels.length > 20) {
+    //                  drawShape(pixels)
+    //                  pixels = []
+    //                  drawLine1(x0, y0, targetX, targetY)
+    //                  return
+    //              }
+    //          }
+    //      }
+    //      drawShape(pixels)
+    //  }
+    //     /**
+    //  * 
+    //  * @param index
+    // */
+    // //% blockId=HuLuMaoGame1_drawLine block="画线条，起点| x0 =%x0 y0 =%y0 终点| x1 =%x1 y1 =%y1"
+    // //% weight=100
+    // //% blockGap=10
+    // //% color="#cc33ff"
+    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    // export function drawLine(x0: number, y0: number, x1: number, y1: number) {
+    //   // y0*=8;y1*=8
+    //    drawLine1(x0,y0,x1,y1)
+    // }
+
+    //    /**
+    //  * 
+    //  * @param index
+    // */
+    // //% blockId=HuLuMaoGame1_drawRectangle block="画矩形，起点| x0 =%x0 y0 =%y0 终点| x1 =%x1 y1 =%y1"
+    // //% weight=99
+    // //% blockGap=10
+    // //% color="#cc33ff"
+    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    // export function drawRectangle(x0: number, y0: number, x1: number, y1: number) {
+    //     drawLine(x0, y0, x1, y0)
+    //     drawLine(x0, y1, x1, y1)
+    //     drawLine(x0, y0, x0, y1)
+    //     drawLine(x1, y0, x1, y1)
+    // }
 }
