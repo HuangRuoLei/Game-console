@@ -610,52 +610,6 @@ namespace HuLuMaoGame1 {
 	    OLED_WR_Byte((x&0x0f),OLED_CMD); 
     }
     
-    function drawShape(pixels: Array<Array<number>>) {
-        let x1 = 128
-        let y1 = 64
-        let x2 = 0
-        let y2 = 0
-        for (let i = 0; i < pixels.length; i++) {
-            if (pixels[i][0] < x1) {
-                x1 = pixels[i][0]
-            }
-            if (pixels[i][0] > x2) {
-                x2 = pixels[i][0]
-            }
-            if (pixels[i][1] < y1) {
-                y1 = pixels[i][1]
-            }
-            if (pixels[i][1] > y2) {
-                y2 = pixels[i][1]
-            }
-        }
-        let page1 = Math.floor(y1 / 8)
-        let page2 = Math.floor(y2 / 8)
-        let line = pins.createBuffer(2)
-        line[0] = 0x40
-        for (let x = x1; x <= x2; x++) {
-            for (let page = page1; page <= page2; page++) {
-                line[1] = 0x00
-                for (let i = 0; i < pixels.length; i++) {
-                    if (pixels[i][0] === x) {
-                        if (Math.floor(pixels[i][1] / 8) === page) {
-                            line[1] |= Math.pow(2, (pixels[i][1] % 8))
-                        }
-                    }
-                }
-                if (line[1] !== 0x00) {
-                    OLED_WR_Byte(0x21,OLED_CMD)
-                    OLED_WR_Byte(x,OLED_CMD)
-                    OLED_WR_Byte(x+1,OLED_CMD)
-                    OLED_WR_Byte(0x22,OLED_CMD)
-                    OLED_WR_Byte(page,OLED_CMD)
-                    OLED_WR_Byte(page+1,OLED_CMD)
-                    //line[1] |= pins.i2cReadBuffer(chipAdress, 2)[1]
-                    pins.i2cWriteBuffer(chipAdress, line, false)
-                }
-            }
-        }
-    }
 
      /**
      * 
@@ -671,42 +625,34 @@ namespace HuLuMaoGame1 {
         basic.pause(200)
         pins.digitalWritePin(DigitalPin.P9, 1)
         
-        OLED_WR_Byte(0xAE,OLED_CMD);//--display off
+        OLED_WR_Byte(0xAE,OLED_CMD);//--turn off oled panel
         OLED_WR_Byte(0x00,OLED_CMD);//---set low column address
         OLED_WR_Byte(0x10,OLED_CMD);//---set high column address
-        OLED_WR_Byte(0x40,OLED_CMD);//--set start line address  
-        OLED_WR_Byte(0xB0,OLED_CMD);//--set page address
-        OLED_WR_Byte(0x81,OLED_CMD); // contract control
-        OLED_WR_Byte(0xFF,OLED_CMD);//--128   
-        OLED_WR_Byte(0xA1,OLED_CMD);//set segment remap 
-        OLED_WR_Byte(0xA6,OLED_CMD);//--normal / reverse
+        OLED_WR_Byte(0x40,OLED_CMD);//--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
+        OLED_WR_Byte(0x81,OLED_CMD);//--set contrast control register
+        OLED_WR_Byte(0xCF,OLED_CMD);// Set SEG Output Current Brightness
+        OLED_WR_Byte(0xA1,OLED_CMD);//--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+        OLED_WR_Byte(0xC8,OLED_CMD);//Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+        OLED_WR_Byte(0xA6,OLED_CMD);//--set normal display
         OLED_WR_Byte(0xA8,OLED_CMD);//--set multiplex ratio(1 to 64)
-        OLED_WR_Byte(0x3F,OLED_CMD);//--1/32 duty
-        OLED_WR_Byte(0xC8,OLED_CMD);//Com scan direction
-        OLED_WR_Byte(0xD3,OLED_CMD);//-set display offset
-        OLED_WR_Byte(0x00,OLED_CMD);//
-        
-        OLED_WR_Byte(0xD5,OLED_CMD);//set osc division
-        OLED_WR_Byte(0x80,OLED_CMD);//
-        
-        OLED_WR_Byte(0xD8,OLED_CMD);//set area color mode off
-        OLED_WR_Byte(0x05,OLED_CMD);//
-        
-        OLED_WR_Byte(0xD9,OLED_CMD);//Set Pre-Charge Period
-        OLED_WR_Byte(0xF1,OLED_CMD);//
-        
-        OLED_WR_Byte(0xDA,OLED_CMD);//set com pin configuartion
-        OLED_WR_Byte(0x12,OLED_CMD);//
-        
-        OLED_WR_Byte(0xDB,OLED_CMD);//set Vcomh
-        OLED_WR_Byte(0x30,OLED_CMD);//
-        
-        OLED_WR_Byte(0x8D,OLED_CMD);//set charge pump enable
-        OLED_WR_Byte(0x14,OLED_CMD);//
-        
-        OLED_WR_Byte(0xAF,OLED_CMD);//--turn on oled panel
-
-        
+        OLED_WR_Byte(0x3f,OLED_CMD);//--1/64 duty
+        OLED_WR_Byte(0xD3,OLED_CMD);//-set display offset	Shift Mapping RAM Counter (0x00~0x3F)
+        OLED_WR_Byte(0x00,OLED_CMD);//-not offset
+        OLED_WR_Byte(0xd5,OLED_CMD);//--set display clock divide ratio/oscillator frequency
+        OLED_WR_Byte(0x80,OLED_CMD);//--set divide ratio, Set Clock as 100 Frames/Sec
+        OLED_WR_Byte(0xD9,OLED_CMD);//--set pre-charge period
+        OLED_WR_Byte(0xF1,OLED_CMD);//Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
+        OLED_WR_Byte(0xDA,OLED_CMD);//--set com pins hardware configuration
+        OLED_WR_Byte(0x12,OLED_CMD);
+        OLED_WR_Byte(0xDB,OLED_CMD);//--set vcomh
+        OLED_WR_Byte(0x40,OLED_CMD);//Set VCOM Deselect Level
+        OLED_WR_Byte(0x20,OLED_CMD);//-Set Page Addressing Mode (0x00/0x01/0x02)
+        OLED_WR_Byte(0x02,OLED_CMD);//
+        OLED_WR_Byte(0x8D,OLED_CMD);//--set Charge Pump enable/disable
+        OLED_WR_Byte(0x14,OLED_CMD);//--set(0x10) disable
+        OLED_WR_Byte(0xA4,OLED_CMD);// Disable Entire Display On (0xa4/0xa5)
+        OLED_WR_Byte(0xA6,OLED_CMD);// Disable Inverse Display On (0xa6/a7) 
+        OLED_WR_Byte(0xAF,OLED_CMD);
         OLED_Clear();
     }
 
@@ -742,12 +688,6 @@ namespace HuLuMaoGame1 {
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function OLED_Clearxy(x0:number,y0:number,x1:number,y1:number):void{
         let x,y;
-        OLED_WR_Byte(0x21,OLED_CMD)
-        OLED_WR_Byte(0,OLED_CMD)
-        OLED_WR_Byte(127,OLED_CMD)
-        OLED_WR_Byte(0x22,OLED_CMD)
-        OLED_WR_Byte(0,OLED_CMD)
-        OLED_WR_Byte(7,OLED_CMD)
         for(y=y0;y<y1;y++)
         {
             OLED_Set_Pos(x0,y);
@@ -853,7 +793,8 @@ namespace HuLuMaoGame1 {
         i=y/8;
         m=y%8;
         n=1<<m;
-        OLED_Refresh(n);
+        OLED_Set_Pos(x,y);
+        OLED_WR_Byte(n,OLED_DATA);
     }
     /**
      * 
@@ -869,7 +810,8 @@ namespace HuLuMaoGame1 {
         i=y/8;
         m=y%8;
         n=1<<m;
-        OLED_Refresh(~n);
+        OLED_Set_Pos(x,y);
+        OLED_WR_Byte(n,OLED_DATA);
     }
     // //更新显存到OLED
     // /**
@@ -881,77 +823,14 @@ namespace HuLuMaoGame1 {
     // //% blockGap=10
     // //% color="#cc33ff"
     // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10	
-     function OLED_Refresh(data:number){
-        let i,n
-        for(i=0;i<8;i++){
-            OLED_WR_Byte(0xb0+i,OLED_CMD); //设置行起始地址
-            OLED_WR_Byte(0x00,OLED_CMD);   //设置低列起始地址
-            OLED_WR_Byte(0x10,OLED_CMD);   //设置高列起始地址
-            for(n=0;n<128;n++)
-		        OLED_WR_Byte(data,OLED_DATA);    
-        }
-    }
-    // function drawLine1(x0: number, y0: number, x1: number, y1: number) {
-    //      let pixels: Array<Array<number>> = []
-    //      let kx: number, ky: number, c: number, i: number, xx: number, yy: number, dx: number, dy: number;
-    //      let targetX = x1
-    //      let targetY = y1
-    //      x1 -= x0; kx = 0; if (x1 > 0) kx = +1; if (x1 < 0) { kx = -1; x1 = -x1; } x1++;
-    //      y1 -= y0; ky = 0; if (y1 > 0) ky = +1; if (y1 < 0) { ky = -1; y1 = -y1; } y1++;
-    //      if (x1 >= y1) {
-    //          c = x1
-    //          for (i = 0; i < x1; i++ , x0 += kx) {
-    //              pixels.push([x0, y0])
-    //              c -= y1; if (c <= 0) { if (i != x1 - 1) pixels.push([x0 + kx, y0]); c += x1; y0 += ky; if (i != x1 - 1) pixels.push([x0, y0]); }
-    //              if (pixels.length > 20) {
-    //                  drawShape(pixels)
-    //                  pixels = []
-    //                  drawLine1(x0, y0, targetX, targetY)
-    //                  return
-    //              }
-    //          }
-    //      } else {
-    //          c = y1
-    //          for (i = 0; i < y1; i++ , y0 += ky) {
-    //              pixels.push([x0, y0])
-    //              c -= x1; if (c <= 0) { if (i != y1 - 1) pixels.push([x0, y0 + ky]); c += y1; x0 += kx; if (i != y1 - 1) pixels.push([x0, y0]); }
-    //              if (pixels.length > 20) {
-    //                  drawShape(pixels)
-    //                  pixels = []
-    //                  drawLine1(x0, y0, targetX, targetY)
-    //                  return
-    //              }
-    //          }
-    //      }
-    //      drawShape(pixels)
-    //  }
-    //     /**
-    //  * 
-    //  * @param index
-    // */
-    // //% blockId=HuLuMaoGame1_drawLine block="画线条，起点| x0 =%x0 y0 =%y0 终点| x1 =%x1 y1 =%y1"
-    // //% weight=100
-    // //% blockGap=10
-    // //% color="#cc33ff"
-    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    // export function drawLine(x0: number, y0: number, x1: number, y1: number) {
-    //   // y0*=8;y1*=8
-    //    drawLine1(x0,y0,x1,y1)
-    // }
-
-    //    /**
-    //  * 
-    //  * @param index
-    // */
-    // //% blockId=HuLuMaoGame1_drawRectangle block="画矩形，起点| x0 =%x0 y0 =%y0 终点| x1 =%x1 y1 =%y1"
-    // //% weight=99
-    // //% blockGap=10
-    // //% color="#cc33ff"
-    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    // export function drawRectangle(x0: number, y0: number, x1: number, y1: number) {
-    //     drawLine(x0, y0, x1, y0)
-    //     drawLine(x0, y1, x1, y1)
-    //     drawLine(x0, y0, x0, y1)
-    //     drawLine(x1, y0, x1, y1)
+    //  function OLED_Refresh(data:number){
+    //     let i,n
+    //     for(i=0;i<8;i++){
+    //         OLED_WR_Byte(0xb0+i,OLED_CMD); //设置行起始地址
+    //         OLED_WR_Byte(0x00,OLED_CMD);   //设置低列起始地址
+    //         OLED_WR_Byte(0x10,OLED_CMD);   //设置高列起始地址
+    //         for(n=0;n<128;n++)
+	// 	        OLED_WR_Byte(data,OLED_DATA);    
+    //     }
     // }
 }
