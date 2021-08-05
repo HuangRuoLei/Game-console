@@ -572,7 +572,6 @@ namespace HuLuMaoGame1 {
     const chipAdress = 0x3C//显示屏地址
     const OLED_CMD =0	//写命令
     const OLED_DATA=1	//写数据
-    let OLED_GRAM: any[][][144][8]=0;
     export enum display{
         //% blockId="on" block="开启"
         on = 0,
@@ -854,8 +853,7 @@ namespace HuLuMaoGame1 {
         i=y/8;
         m=y%8;
         n=1<<m;
-        OLED_GRAM[x][i]|=n;
-        OLED_Refresh();
+        OLED_Refresh(n);
     }
     /**
      * 
@@ -871,10 +869,7 @@ namespace HuLuMaoGame1 {
         i=y/8;
         m=y%8;
         n=1<<m;
-        OLED_GRAM[x][i]=~OLED_GRAM[x][i];
-        OLED_GRAM[x][i]|=n;
-        OLED_GRAM[x][i]=~OLED_GRAM[x][i];
-        OLED_Refresh();
+        OLED_Refresh(~n);
     }
     // //更新显存到OLED
     // /**
@@ -886,14 +881,14 @@ namespace HuLuMaoGame1 {
     // //% blockGap=10
     // //% color="#cc33ff"
     // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10	
-     function OLED_Refresh(){
+     function OLED_Refresh(data:number){
         let i,n
         for(i=0;i<8;i++){
             OLED_WR_Byte(0xb0+i,OLED_CMD); //设置行起始地址
             OLED_WR_Byte(0x00,OLED_CMD);   //设置低列起始地址
             OLED_WR_Byte(0x10,OLED_CMD);   //设置高列起始地址
             for(n=0;n<128;n++)
-		        OLED_WR_Byte(OLED_GRAM[n][i],OLED_DATA);    
+		        OLED_WR_Byte(data,OLED_DATA);    
         }
     }
     // function drawLine1(x0: number, y0: number, x1: number, y1: number) {
