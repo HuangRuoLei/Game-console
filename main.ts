@@ -735,7 +735,7 @@ namespace HuLuMaoGame1 {
             k=chr.charCodeAt(n)
             if(k>32) k-=32
             else k=0
-          //  OLED_Set_Pos(x,y);
+            OLED_Set_Pos(x,y);
             data=0;
             for(i=0;i<8;i++){
                 data|=(((HuLuMaoGame.asc16[k*4]>>24)&0x000000ff)<<i)&0x80;data>>=1
@@ -746,23 +746,10 @@ namespace HuLuMaoGame1 {
                 data|=(((HuLuMaoGame.asc16[k*4+1]>>16)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+1]>>8)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+1])&0x000000ff)<<i)&0x80;
-                for(m=0;m<8;m++)           //写入数据
-				{
-					if(data&0x80)OLED_DrawPoint(x,y);
-					else OLED_ClearPoint(x,y);
-					data<<=1;
-					y++;
-					if((y-y0)==16)
-					{
-						y=y0;
-						x++;
-						break;
-                    }
-				}
-              //  OLED_WR_Byte(data,OLED_DATA);
+                OLED_WR_Byte(data,OLED_DATA);
 				data=0;
             }
-         //   OLED_Set_Pos(x,y+1);
+            OLED_Set_Pos(x,y+1);
             for(i=0;i<8;i++){
                 data|=(((HuLuMaoGame.asc16[k*4+2]>>24)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+2]>>16)&0x000000ff)<<i)&0x80;data>>=1
@@ -772,20 +759,7 @@ namespace HuLuMaoGame1 {
                 data|=(((HuLuMaoGame.asc16[k*4+3]>>16)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+3]>>8)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+3])&0x000000ff)<<i)&0x80;
-                for(m=0;m<8;m++)           //写入数据
-				{
-					if(data&0x80)OLED_DrawPoint(x,y);
-					else OLED_ClearPoint(x,y);
-					data<<=1;
-					y++;
-					if((y-y0)==16)
-					{
-						y=y0;
-						x++;
-						break;
-                    }
-				}
-              //  OLED_WR_Byte(data,OLED_DATA);
+                OLED_WR_Byte(data,OLED_DATA);
 				data=0;
             }
             x+=8;
@@ -805,59 +779,4 @@ namespace HuLuMaoGame1 {
     export function OLED_ShowNum(x:number,y:number,dat:number){
         OLED_ShowChar(x,y,dat.toString())
     }
-
-    /**
-     * 
-     * @param index
-    */
-    //% blockId=HuLuMaoGame1_OLED_DrawPoint block="在 x=|%x,y=|%y处画点"
-    //% weight=144
-    //% blockGap=10
-    //% color="#cc33ff"
-    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function OLED_DrawPoint(x:number,y:number){
-        let i,m,n;
-        i=y/8;
-        m=y%8;
-        n=1<<m;
-        OLED_Set_Pos(x,y);
-        OLED_WR_Byte(n,OLED_DATA);
-    }
-    /**
-     * 
-     * @param index
-    */
-    //% blockId=HuLuMaoGame1_OLED_ClearPoint block="清除x=|%x,y=|%y处的点"
-    //% weight=144
-    //% blockGap=10
-    //% color="#cc33ff"
-    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function OLED_ClearPoint(x:number,y:number){
-        let i,m,n;
-        i=y/8;
-        m=y%8;
-        n=1<<m;
-        OLED_Set_Pos(x,y);
-        OLED_WR_Byte(~n,OLED_DATA);
-    }
-    // //更新显存到OLED
-    // /**
-    //  * 
-    //  * @param index
-    // */
-    // //% blockId=HuLuMaoGame1_OLED_Refresh block="更新屏幕显示，在画点之后调用"
-    // //% weight=143
-    // //% blockGap=10
-    // //% color="#cc33ff"
-    // //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10	
-    //  function OLED_Refresh(data:number){
-    //     let i,n
-    //     for(i=0;i<8;i++){
-    //         OLED_WR_Byte(0xb0+i,OLED_CMD); //设置行起始地址
-    //         OLED_WR_Byte(0x00,OLED_CMD);   //设置低列起始地址
-    //         OLED_WR_Byte(0x10,OLED_CMD);   //设置高列起始地址
-    //         for(n=0;n<128;n++)
-	// 	        OLED_WR_Byte(data,OLED_DATA);    
-    //     }
-    // }
 }
