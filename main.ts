@@ -605,9 +605,16 @@ namespace HuLuMaoGame1 {
     }
     //坐标设置
     function OLED_Set_Pos(x:number,y:number){
-        OLED_WR_Byte(0xb0+y,OLED_CMD);
-	    OLED_WR_Byte(((x&0xf0)>>4)|0x10,OLED_CMD);
-	    OLED_WR_Byte((x&0x0f),OLED_CMD); 
+
+        // OLED_WR_Byte(0xb0+y,OLED_CMD);
+	    // OLED_WR_Byte(((x&0xf0)>>4)|0x10,OLED_CMD);
+	    // OLED_WR_Byte((x&0x0f),OLED_CMD); 
+        OLED_WR_Byte(0x21,OLED_CMD)
+        OLED_WR_Byte(x,OLED_CMD)
+        OLED_WR_Byte(x+5,OLED_CMD)
+        OLED_WR_Byte(0x22,OLED_CMD)
+        OLED_WR_Byte(y,OLED_CMD)
+        OLED_WR_Byte(y+1,OLED_CMD)
     }
 
     function drawShape(pixels: Array<Array<number>>) {
@@ -880,7 +887,7 @@ namespace HuLuMaoGame1 {
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function drawLine(x0: number, y0: number, x1: number, y1: number) {
-       y0*=8;y1*=8
+      // y0*=8;y1*=8
        drawLine1(x0,y0,x1,y1)
     }
 
