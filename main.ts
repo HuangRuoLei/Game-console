@@ -573,7 +573,7 @@ namespace HuLuMaoGame1 {
     const OLED_CMD =0	//写命令
     const OLED_DATA=1	//写数据
 
-    let OLED_GRAM: any[][][144][8]
+    let OLED_GRAM: any[][][144][8]=0
     export enum display{
         //% blockId="on" block="开启"
         on = 0,
@@ -850,7 +850,7 @@ namespace HuLuMaoGame1 {
     //% blockGap=10
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    function OLED_Refresh(){
+    export function OLED_Refresh(){
         let i,n;
         for(i=0;i<8;i++)
         {
