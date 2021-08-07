@@ -572,8 +572,6 @@ namespace HuLuMaoGame1 {
     const chipAdress = 0x3C//显示屏地址
     const OLED_CMD =0	//写命令
     const OLED_DATA=1	//写数据
-
-    let OLED_GRAM: any[][][144][8]=0
     export enum display{
         //% blockId="on" block="开启"
         on = 0,
@@ -604,14 +602,15 @@ namespace HuLuMaoGame1 {
             Write_IIC_Command(data)
         }
     }
-  
-    function OLED_WR_BP(x:number,y:number){
-        OLED_WR_Byte(0xb0+y,OLED_CMD);//设置行起始地址
-	    OLED_WR_Byte(((x&0xf0)>>4)|0x10,OLED_CMD);
-	    OLED_WR_Byte((x&0x0f)|0x01,OLED_CMD);
-    }
+    //坐标设置
+    function OLED_Set_Pos(x:number,y:number){
 
+        OLED_WR_Byte(0xb0+y,OLED_CMD);
+	    OLED_WR_Byte(((x&0xf0)>>4)|0x10,OLED_CMD);
+	    OLED_WR_Byte((x&0x0f),OLED_CMD); 
+    }
     
+
      /**
      * 
      * @param index
@@ -691,12 +690,12 @@ namespace HuLuMaoGame1 {
         let x,y;
         for(y=y0;y<y1;y++)
         {
+            OLED_Set_Pos(x0,y);
             for(x=x0;x<x1;x++)
             {
-                OLED_GRAM[y][x]=0;//清除所有数据
+                OLED_WR_Byte(0,OLED_DATA);
             }
         } 
-        OLED_Refresh();//更新显示
     }
 
     /**
@@ -736,6 +735,7 @@ namespace HuLuMaoGame1 {
             k=chr.charCodeAt(n)
             if(k>32) k-=32
             else k=0
+            OLED_Set_Pos(x,y);
             data=0;
             for(i=0;i<8;i++){
                 data|=(((HuLuMaoGame.asc16[k*4]>>24)&0x000000ff)<<i)&0x80;data>>=1
@@ -746,22 +746,10 @@ namespace HuLuMaoGame1 {
                 data|=(((HuLuMaoGame.asc16[k*4+1]>>16)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+1]>>8)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+1])&0x000000ff)<<i)&0x80;
-                for(m=0;m<8;m++)           //写入数据
-				{
-					if(data&0x80)OLED_DrawPoint(x,y);
-					else OLED_ClearPoint(x,y);
-					data<<=1;
-					y++;
-					if((y-y0)==16)
-					{
-						y=y0;
-						x++;
-						break;
-                    }
-				}
-                
+                OLED_WR_Byte(data,OLED_DATA);
 				data=0;
             }
+            OLED_Set_Pos(x,y+1);
             for(i=0;i<8;i++){
                 data|=(((HuLuMaoGame.asc16[k*4+2]>>24)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+2]>>16)&0x000000ff)<<i)&0x80;data>>=1
@@ -771,19 +759,7 @@ namespace HuLuMaoGame1 {
                 data|=(((HuLuMaoGame.asc16[k*4+3]>>16)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+3]>>8)&0x000000ff)<<i)&0x80;data>>=1
                 data|=(((HuLuMaoGame.asc16[k*4+3])&0x000000ff)<<i)&0x80;
-                for(m=0;m<8;m++)           //写入数据
-				{
-					if(data&0x80)OLED_DrawPoint(x,y);
-					else OLED_ClearPoint(x,y);
-					data<<=1;
-					y++;
-					if((y-y0)==16)
-					{
-						y=y0;
-						x++;
-						break;
-                    }
-				}
+                OLED_WR_Byte(data,OLED_DATA);
 				data=0;
             }
             x+=8;
@@ -803,62 +779,208 @@ namespace HuLuMaoGame1 {
     export function OLED_ShowNum(x:number,y:number,dat:number){
         OLED_ShowChar(x,y,dat.toString())
     }
+}
 
-    /**
-     * 
-     * @param index
-    */
-    //% blockId=HuLuMaoGame1_OLED_DrawPoint block="在 x=|%x,y=|%y处画一个点"
-    //% weight=144
-    //% blockGap=10
-    //% color="#cc33ff"
-    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function OLED_DrawPoint(x:number,y:number){
-        let i,m,n;
-        i=y/8;
-        m=y%8;
-        n=1<<m;
-        OLED_GRAM[x][i]|=n;
 
+
+
+
+
+
+
+
+
+
+//% color="#ff0000" weight=47 icon="\uf1b0" block="呼噜猫游戏机按键与逻辑"
+namespace HuLuMaoexpanding{
+    export enum key_number{
+        //% blockId="_0" block="0"
+        _0=0,
+        //% blockId="_1" block="1"
+        _1=1,
+        //% blockId="_2" block="2"
+        _2,
+        //% blockId="_3" block="3"
+        _3,
+        //% blockId="_4" block="4"
+        _4,
+        //% blockId="_5" block="5"
+        _5,
+        //% blockId="_6" block="6"
+        _6,
+        //% blockId="_7" block="7"
+        _7,
+        //% blockId="_8" block="8"
+        _8,
+        //% blockId="_9" block="9"
+        _9,
+        //% blockId="_F1" block="F1"
+        _F1,
+        //% blockId="_F2" block="F2"
+        _F2,
+        //% blockId="_F3" block="F3"
+        _F3,
+        //% blockId="_F4" block="F4"
+        _F4,
+        //% blockId="_F5" block="F5"
+        _F5,
+        //% blockId="_F6" block="F6"
+        _F6,
+        //% blockId="_F7" block="F7"
+        _F7,
+        //% blockId="_F8" block="F8"
+        _F8,
+        //% blockId="_F9" block="F9"
+        _F9,
+        //% blockId="_F10" block="F10"
+        _F10,
     }
 
-    /**
-     * 
-     * @param index
-    */
-    //% blockId=HuLuMaoGame1_OLED_ClearPoint block="删除 x=|%x,y=|%y处的点"
-    //% weight=143
-    //% blockGap=10
-    //% color="#cc33ff"
-    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function OLED_ClearPoint(x:number,y:number){
-        let i,m,n;
-        i=y/8;
-        m=y%8;
-        n=1<<m;
-        OLED_GRAM[x][i]=~OLED_GRAM[x][i];
-        OLED_GRAM[x][i]|=n;
-        OLED_GRAM[x][i]=~OLED_GRAM[x][i];
+
+    export enum YuHuo{
+        //% blockId="yu" block="与"
+        yu = 1,
+        //% blockId="huo" block="或"
+        huo,
+    }
+    export enum move{
+        //% blockId="zuo" block="左移"
+        zuo = 1,
+        //% blockId="you" block="右移"
+        you,
     }
 
+     /**
+     * 判断指定按键是否按下
+     * @param index
+    */
+    //% blockId=HuLuMaoexpanding_Key_Key block="当按键|%index被按下"
+    //% weight=99
+    //% blockGap=10
+    //% color="#ff0000"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function Key(index:key_number): boolean {
+        if(Key_get()==index)
+            return true;
+        else 
+            return false;
+    }
     /**
+     * 获取当前按键值
+     * @param index
+    */
+    //% blockId=HuLuMaoexpanding_Key_Key_get block="获取当前按键值,有按键按下将会获取到当前按键数字，没有则获取到-1"
+    //% weight=98
+    //% blockGap=10
+    //% color="#ff0000"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function Key_get(): number {
+        let data;
+        // let temp: boolean = false;
+        data = pins.analogReadPin(AnalogPin.P0);
+         if(data>=1000) data=-1;
+         else
+         {
+            basic.pause(10);
+            data = pins.analogReadPin(AnalogPin.P0);
+            if (data<20) data=0;
+            else if ((20<=data)&&(data<75)) data=1;
+            else if ((75<=data)&&(data<130)) data=2;
+            else if ((130<=data)&&(data<180)) data=3;
+            else if ((180<=data)&&(data<235)) data=4;
+            else if ((235<=data)&&(data<287)) data=5;
+            else if ((287<=data)&&(data<333)) data=6;
+            else if ((333<=data)&&(data<385)) data=7;
+            else if ((385<=data)&&(data<435)) data=8;
+            else if ((435<=data)&&(data<486)) data=9;
+            else if ((486<=data)&&(data<536)) data=10;
+            else if ((536<=data)&&(data<589)) data=11;
+            else if ((589<=data)&&(data<640)) data=12;
+            else if ((640<=data)&&(data<691)) data=13;
+            else if ((691<=data)&&(data<742)) data=14;
+            else if ((742<=data)&&(data<792)) data=15;
+            else if ((792<=data)&&(data<844)) data=16;
+            else if ((844<=data)&&(data<896)) data=17;
+            else if ((896<=data)&&(data<946)) data=18;
+            else if ((946<=data)&&(data<1000)) data=19;
+            else data=-1;
+            while(pins.analogReadPin(AnalogPin.P0)<1000){
+
+            }
+         }
+         
+         return data;
+       //  return temp;
+    }
+
+        /**
      * 
      * @param index
     */
-    //% blockId=HuLuMaoGame1_OLED_ClearPoint block="更新屏幕显示"
-    //% weight=142
+    //% blockId=HuLuMaoexpanding_Key_logic1 block="将|%index和|%index1进行按位|%index2"
+    //% weight=97
     //% blockGap=10
-    //% color="#cc33ff"
+    //% index.min=0 index.max=255
+    //% index1.min=0 index1.max=255
+    //% color="#ff0000"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function OLED_Refresh(){
-        let i,n;
-        for(i=0;i<8;i++)
-        {
-            OLED_WR_Byte(0xb0+i,OLED_CMD); //设置行起始地址
-            OLED_WR_Byte(0x00,OLED_CMD);   //设置低列起始地址
-            OLED_WR_Byte(0x10,OLED_CMD);   //设置高列起始地址
-            for(n=0;n<128;n++)
-                OLED_WR_Byte(OLED_GRAM[n][i],OLED_DATA);
+    export function logic1(index:number,index1:number,index2:YuHuo): number {
+        let length;
+        switch(index2){
+            case YuHuo.yu:length=(index&index1);break;
+            case YuHuo.huo:length=(index|index1);break;
         }
+        return length;
+    }
+
+        /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoexpanding_Key_logic2 block="将|%index进行按位取反"
+    //% weight=96
+    //% blockGap=10
+    //% index.min=0 index.max=255
+    //% color="#ff0000"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function logic2(index:number): number {
+        let length;
+        length=(~index);
+        return length;
+    }
+
+        /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoexpanding_Key_logic3 block="将|%index进行|%index1 |%index2"
+    //% weight=95
+    //% blockGap=10
+    //% index.min=0 index.max=255
+    //% index2.min=0 index2.max=255
+    //% color="#ff0000"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function logic3(index:number,index1:move,index2:number): number {
+        let length;
+        switch(index1){
+            case move.zuo:length=index<<index2;break;
+            case move.you:length=index>>index2;break;
+        }
+        return length;
+    }
+
+    /**
+     * 
+     * @param index
+    */
+    //% blockId=HuLuMaoexpanding_Key_math1 block="运算|%index的|%index1次方"
+    //% weight=98
+    //% blockGap=10
+    //% color="#ff0000"
+    //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
+    export function math1(index:number,index1:number): number {
+        let length;
+        length=Math.pow(index,index1);
+        return length;
     }
 }
