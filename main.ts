@@ -977,7 +977,7 @@ namespace HuLuMaoexpanding_Key{
          if(data>=1000) data=-1;
          else
          {
-            basic.pause(10);
+            basic.pause(50);
             data = pins.analogReadPin(AnalogPin.P0);
             if (data<20) data=0;
             else if ((20<=data)&&(data<75)) data=1;
@@ -1025,7 +1025,7 @@ namespace HuLuMaoexpanding_Key{
          if(data>=1000) data=-1;
          else
          {
-            basic.pause(10);
+            basic.pause(50);
             data = pins.analogReadPin(AnalogPin.P0);
             if (data<20) data=0;
             else if ((20<=data)&&(data<75)) data=1;
