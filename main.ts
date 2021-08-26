@@ -972,12 +972,12 @@ namespace HuLuMaoexpanding_Key{
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function Key(index:key_number): boolean {
         let data;
-        // let temp: boolean = false;
+         let temp: boolean = false;
         data = pins.analogReadPin(AnalogPin.P0);
          if(data>=1000) data=-1;
          else
          {
-            basic.pause(50);
+            basic.pause(10);
             data = pins.analogReadPin(AnalogPin.P0);
             if (data<20) data=0;
             else if ((20<=data)&&(data<75)) data=1;
@@ -1006,9 +1006,10 @@ namespace HuLuMaoexpanding_Key{
             basic.clearScreen()
          }
         if(data==index)
-            return true;
+           temp=true
         else 
-            return false;
+           temp=false
+        return temp;
     }
     /**
      * 获取当前按键值
@@ -1050,8 +1051,9 @@ namespace HuLuMaoexpanding_Key{
             else if ((946<=data)&&(data<1000)) data=19;
             else data=-1;
             while(pins.analogReadPin(AnalogPin.P0)<1000){
-
+                basic.showNumber(0)
             }
+            basic.clearScreen()
          }
          
          return data;
