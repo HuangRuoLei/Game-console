@@ -674,7 +674,15 @@ namespace HuLuMaoGame1 {
         //% blockId="_11" block="期"
         _11 ,
         //% blockId="_12" block="间"
-        _12 
+        _12 ,
+        //% blockId="_13" block="开"
+        _13,
+        //% blockId="_14" block="关"
+        _14 ,
+        //% blockId="_15" block="铃"
+        _15 ,
+        //% blockId="_16" block="声"
+        _16
     }
     export enum display{
         //% blockId="on" block="开启"
