@@ -965,14 +965,13 @@ namespace HuLuMaoexpanding_Key{
      * 判断指定按键是否按下
      * @param index
     */
-    //% blockId=HuLuMaoexpanding_Key_Key block="当按键|%index被按下"
+    //% blockId=HuLuMaoexpanding_Key_Key block="当按键|%index被按下,支持连按，触发间隔|%time ms"
     //% weight=99
     //% blockGap=10
     //% color="#ff0000"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function Key(index:key_number): boolean {
+    export function Key(index:key_number,time:number): boolean {
         let data;
-         let temp: boolean = false;
         data = pins.analogReadPin(AnalogPin.P0);
          if(data>=1000) data=-1;
          else
@@ -1000,10 +999,7 @@ namespace HuLuMaoexpanding_Key{
             else if ((896<=data)&&(data<946)) data=18;
             else if ((946<=data)&&(data<1000)) data=19;
             else data=-1;
-            while(pins.analogReadPin(AnalogPin.P0)<1000){
-               if(data!=index)
-                    return false
-            }
+            basic.pause(time)
          }
         if(data==index)
             return true
