@@ -569,7 +569,7 @@ namespace HuLuMaoGame {
 
 //% color="#cc33ff" weight=50 icon="\uf1b9" block="呼噜猫游戏机小屏"
 namespace HuLuMaoGame1 {
-    const chipAdress = 0x3C//显示屏地址
+  //  const chipAdress = 0x3C//显示屏地址
     const OLED_CMD =0	//写命令
     const OLED_DATA=1	//写数据
 
@@ -696,7 +696,7 @@ namespace HuLuMaoGame1 {
         buf[0]=0x00
         buf[1]=com
 
-        pins.i2cWriteBuffer(chipAdress, buf);
+        pins.i2cWriteBuffer(0x3C, buf);
     }
     //写数据
     function Write_IIC_Data(data:number){
@@ -704,7 +704,7 @@ namespace HuLuMaoGame1 {
         buf[0]=0x40
         buf[1]=data
 
-        pins.i2cWriteBuffer(chipAdress, buf);
+        pins.i2cWriteBuffer(0x3C, buf);
     }
     //写一个字节
     function OLED_WR_Byte(data:number,CorD:number){
