@@ -971,7 +971,40 @@ namespace HuLuMaoexpanding{
     //% color="#ff0000"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function Key(index:key_number): boolean {
-        if(Key_get()==index)
+        let data;
+        // let temp: boolean = false;
+        data = pins.analogReadPin(AnalogPin.P0);
+         if(data>=1000) data=-1;
+         else
+         {
+            basic.pause(10);
+            data = pins.analogReadPin(AnalogPin.P0);
+            if (data<20) data=0;
+            else if ((20<=data)&&(data<75)) data=1;
+            else if ((75<=data)&&(data<130)) data=2;
+            else if ((130<=data)&&(data<180)) data=3;
+            else if ((180<=data)&&(data<235)) data=4;
+            else if ((235<=data)&&(data<287)) data=5;
+            else if ((287<=data)&&(data<333)) data=6;
+            else if ((333<=data)&&(data<385)) data=7;
+            else if ((385<=data)&&(data<435)) data=8;
+            else if ((435<=data)&&(data<486)) data=9;
+            else if ((486<=data)&&(data<536)) data=10;
+            else if ((536<=data)&&(data<589)) data=11;
+            else if ((589<=data)&&(data<640)) data=12;
+            else if ((640<=data)&&(data<691)) data=13;
+            else if ((691<=data)&&(data<742)) data=14;
+            else if ((742<=data)&&(data<792)) data=15;
+            else if ((792<=data)&&(data<844)) data=16;
+            else if ((844<=data)&&(data<896)) data=17;
+            else if ((896<=data)&&(data<946)) data=18;
+            else if ((946<=data)&&(data<1000)) data=19;
+            else data=-1;
+            while(pins.analogReadPin(AnalogPin.P0)<1000){
+
+            }
+         }
+        if(data==index)
             return true;
         else 
             return false;
