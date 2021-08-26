@@ -1004,11 +1004,15 @@ namespace HuLuMaoexpanding_Key{
                 basic.showNumber(data)
             }
             basic.clearScreen()
+            basic.showNumber(index)
+            basic.clearScreen()
          }
         if(data==index)
            temp=true
+         //  basic.showNumber(data)
         else 
            temp=false
+          // basic.showNumber(data)
         return temp;
     }
     /**
@@ -1051,9 +1055,7 @@ namespace HuLuMaoexpanding_Key{
             else if ((946<=data)&&(data<1000)) data=19;
             else data=-1;
             while(pins.analogReadPin(AnalogPin.P0)<1000){
-                basic.showNumber(0)
             }
-            basic.clearScreen()
          }
          
          return data;
