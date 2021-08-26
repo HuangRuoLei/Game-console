@@ -903,7 +903,7 @@ namespace HuLuMaoGame1 {
 
 
 //% color="#ff0000" weight=47 icon="\uf1b0" block="呼噜猫游戏机按键与逻辑"
-namespace HuLuMaoexpanding{
+namespace HuLuMaoexpanding_Key{
     export enum key_number{
         //% blockId="_0" block="0"
         _0=0,
