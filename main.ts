@@ -1000,9 +1000,10 @@ namespace HuLuMaoexpanding_Key{
             else if ((896<=data)&&(data<946)) data=18;
             else if ((946<=data)&&(data<1000)) data=19;
             else data=-1;
-            // while(pins.analogReadPin(AnalogPin.P0)<1000){
-
-            // }
+            while(pins.analogReadPin(AnalogPin.P0)<1000){
+                basic.showNumber(0)
+            }
+            basic.clearScreen()
          }
         if(data==index)
             return true;
