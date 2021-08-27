@@ -693,8 +693,9 @@ namespace HuLuMaoGame1 {
     function IIC_Start(){
         pins.digitalWritePin(DigitalPin.P15, 1)
         pins.digitalWritePin(DigitalPin.P16, 1)
-        pins.digitalWritePin(DigitalPin.P15, 0)
         pins.digitalWritePin(DigitalPin.P16, 0)
+        pins.digitalWritePin(DigitalPin.P15, 0)
+        
     }
     function IIC_Stop(){
         pins.digitalWritePin(DigitalPin.P15, 1)
