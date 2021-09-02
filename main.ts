@@ -953,6 +953,8 @@ namespace HuLuMaoexpanding_Key{
         _8,
         //% blockId="_9" block="9"
         _9,
+        //% blockId="_F0" block="F0"
+        _F0,
         //% blockId="_F1" block="F1"
         _F1,
         //% blockId="_F2" block="F2"
@@ -971,8 +973,6 @@ namespace HuLuMaoexpanding_Key{
         _F8,
         //% blockId="_F9" block="F9"
         _F9,
-        //% blockId="_F10" block="F10"
-        _F10,
     }
 
 
