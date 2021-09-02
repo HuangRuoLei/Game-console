@@ -470,7 +470,7 @@
 
 
 
-//% color="#cc33ff" weight=50 icon="\uf1b9" block="呼噜猫游戏机小屏"
+//% color="#cc33ff" weight=50 icon="\uf1b9" block="呼噜猫特训板小屏"
 namespace HuLuMaoGame1 {
     const chipAdress = 0x3C//显示屏地址
     const OLED_CMD =0	//写命令
@@ -732,9 +732,9 @@ namespace HuLuMaoGame1 {
     //% color="#cc33ff"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
     export function OLED_Init(): void {
-        pins.digitalWritePin(DigitalPin.P9, 0)
+        pins.digitalWritePin(DigitalPin.P16, 0)
         basic.pause(200)
-        pins.digitalWritePin(DigitalPin.P9, 1)
+        pins.digitalWritePin(DigitalPin.P16, 1)
         
         OLED_WR_Byte(0xAE,OLED_CMD);//--turn off oled panel
         OLED_WR_Byte(0x00,OLED_CMD);//---set low column address
@@ -930,7 +930,7 @@ namespace HuLuMaoGame1 {
 
 
 
-//% color="#ff0000" weight=47 icon="\uf1b0" block="呼噜猫游戏机按键与逻辑"
+//% color="#ff0000" weight=47 icon="\uf1b0" block="呼噜猫特训板按键与逻辑"
 namespace HuLuMaoexpanding_Key{
     export enum key_number{
         //% blockId="_0" block="0"
@@ -993,7 +993,7 @@ namespace HuLuMaoexpanding_Key{
      * 判断指定按键是否按下
      * @param index
     */
-    //% blockId=HuLuMaoexpanding_Key_Key block="当按键|%index被按下,支持连按，触发间隔|%time ms"
+    //% blockId=HuLuMaoexpanding_Key_Key block="当按键|%index被按下,支持连按"
     //% weight=99
     //% blockGap=10
     //% color="#ff0000"
@@ -1027,7 +1027,7 @@ namespace HuLuMaoexpanding_Key{
             else if ((896<=data)&&(data<946)) data=18;
             else if ((946<=data)&&(data<1000)) data=19;
             else data=-1;
-            basic.pause(time)
+           // basic.pause(time)
          }
         if(data==index)
             return true
