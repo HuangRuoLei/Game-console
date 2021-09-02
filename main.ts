@@ -998,7 +998,7 @@ namespace HuLuMaoexpanding_Key{
     //% blockGap=10
     //% color="#ff0000"
     //% name.fieldEditor="gridpicker" name.fieldOptions.columns=10
-    export function Key(index:key_number,time:number): boolean {
+    export function Key(index:key_number): boolean {
         let data;
         data = pins.analogReadPin(AnalogPin.P0);
          if(data>=1000) data=-1;
